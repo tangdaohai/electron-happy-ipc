@@ -1,0 +1,22 @@
+{
+  "name": "electron-happy-ipc",
+  "version": "1.0.0",
+  "description": "async request for ipc.",
+  "main": "index.js",
+  "author": "tangdaohai@outlook.com",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "electron": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/jest": "^25.2.2",
+    "babel-jest": "^26.0.1",
+    "jest": "^26.0.1"
+  }
+}
