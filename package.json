@@ -6,7 +6,7 @@
   "author": "tangdaohai@outlook.com",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "peerDependencies": {
     "electron": "*"
