@@ -17,8 +17,7 @@ type Callback = (ctx: IpcContext, data: any) => void
 const _cbMap = new Map<string, Callback>()
 
 export default function (ipcMain: IpcMain) {
-  ipcMain.on('message', (event, clientMsg: ClientMsg) => {
-    console.log('收到')
+  ipcMain.on('from-client', (event, clientMsg: ClientMsg) => {
     //  包裹响应函数
     const reply: Reply = function (data: any) {
       // 将 currentSymbol 返回给客户端

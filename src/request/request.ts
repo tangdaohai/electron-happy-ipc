@@ -85,7 +85,5 @@ export default function (ipcRenderer: IpcRenderer) {
     })
   }
 
-  return {
-    request
-  }
+  return request
 }
