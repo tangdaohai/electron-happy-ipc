@@ -8,15 +8,12 @@ interface ReceivedParams {
 interface IPCRequestOptions {
   type: string,
   data?: any,
-  symbol?: string
+  replace?: boolean
 }
 
 type Callback = (data: any, err?: IPCRequestError) => void
 
-// 缓存标识与回调函数
-const _waitMap = new Map<string, Callback>()
-
-type IPCRequestErrorCode = 'overwritten' | 'setTimeout'
+type IPCRequestErrorCode = 'replace' | 'timeout'
 interface IPCRequestError extends Error {
   code: IPCRequestErrorCode
 }
@@ -26,6 +23,10 @@ class IPCRequestError extends Error {
     this.code = code
   }
 }
+
+// 缓存标识与回调函数
+const _waitMap = new Map<string, Callback>()
+const _typeReplaceMap = new Map<string, string>()
 
 export default function (ipcRenderer: IpcRenderer) {
   // 监听 electron 端发送来的消息
@@ -57,22 +58,34 @@ export default function (ipcRenderer: IpcRenderer) {
         data
       }
     }
+
     // @FIXME 生成机制有待优化
     // 生成唯一标识
-    const currentSymbol = options.symbol || (Date.now() + '')
+    const currentSymbol = Date.now() + ''
+
+    if (options.replace) {
+      const lastSymbol = _typeReplaceMap.get(options.type)
+      // 如果存在上一次的 symbol
+      if (lastSymbol) {
+        // 检查是否已经发生过 ipc 请求了，如果存在， reject 它
+        const fn = _waitMap.get(lastSymbol)
+        if (typeof fn === 'function') {
+          const error = new IPCRequestError('replace', 'This request was replaced by a new request.此请求被后面的覆盖了。')
+          fn(undefined, error)
+        }
+      }
+      // 设置本次的
+      _typeReplaceMap.set(options.type, currentSymbol)
+    }
 
     return new Promise((resolve, reject) => {
-      // 检查是否已经发生过 ipc 请求了，如果存在， reject 它
-      const fn = _waitMap.get(currentSymbol)
-      if (typeof fn === 'function') {
-        const error = new IPCRequestError('overwritten', 'Overwritten by later request.此请求被后面的覆盖了。')
-        fn(undefined, error)
-      }
       // 覆盖之前的旧回调，在 promise 中等待回调被执行
       _waitMap.set(currentSymbol, (result: any, err?: IPCRequestError) => {
         if (err) {
           reject(err)
         } else {
+          // 请求已返回 移除 replace symbol
+          _typeReplaceMap.delete(options.type)
           resolve(result)
         }
       })
