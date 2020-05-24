@@ -5,10 +5,12 @@ interface ReceivedParams {
   data: any
 }
 
-interface IPCRequestOptions {
+export interface IPCRequestOptions {
   type: string,
   data?: any,
-  replace?: boolean
+  replace?: boolean,
+  // timeout unit ms
+  timeout?: undefined | number
 }
 
 type Callback = (data: any, err?: IPCRequestError) => void
@@ -78,9 +80,22 @@ export default function (ipcRenderer: IpcRenderer) {
       _typeReplaceMap.set(options.type, currentSymbol)
     }
 
+    let timer: any
+    if (options.timeout) {
+      timer = setTimeout(() => {
+        const fn = _waitMap.get(currentSymbol)
+        if (typeof fn === 'function') {
+          const error = new IPCRequestError('timeout', `${options.type}: Request timeout(${options.timeout}ms)`)
+          fn(undefined, error)
+        }
+      }, options.timeout)
+    }
+
     return new Promise((resolve, reject) => {
       // 覆盖之前的旧回调，在 promise 中等待回调被执行
       _waitMap.set(currentSymbol, (result: any, err?: IPCRequestError) => {
+        // cancel timer
+        options.timeout && clearTimeout(timer)
         if (err) {
           reject(err)
         } else {
