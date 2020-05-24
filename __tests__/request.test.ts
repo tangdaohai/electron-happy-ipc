@@ -1,7 +1,7 @@
 
 import { ipcMain, ipcRenderer } from '../test-driver'
 import serverService from '../src/server/server'
-import requestService from '../src/request/request'
+import requestService, { IPCRequestOptions } from '../src/request/request'
 
 describe('use ipc request', () => {
   
@@ -22,8 +22,8 @@ describe('use ipc request', () => {
     expect(result).toBe(value.foo)
   })
 
-  test('request was replaced by a new request', async () => {
-    const options = {
+  test('replace', async () => {
+    const options: IPCRequestOptions = {
       type: 'request test',
       replace: true
     }
@@ -41,5 +41,24 @@ describe('use ipc request', () => {
     })
     const result = await request(options)
     expect(result).toBe(2)
+  })
+
+  test('timeout', async () => {
+    const options: IPCRequestOptions = {
+      type: 'timeout test',
+      timeout: 500
+    }
+
+    server.use(options.type, ctx => {
+      setTimeout(() => {
+        ctx.reply('result')
+      }, 600)
+    })
+
+    try {
+      await request(options)
+    } catch (err) {
+      expect(err.code).toMatch('timeout')
+    }
   })
 })
