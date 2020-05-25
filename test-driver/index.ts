@@ -21,7 +21,10 @@ export const ipcRenderer = {
   send: (type: string, params: any) => {
     const fn = _mainMap.get(type)
     if (typeof fn === 'function') {
-      fn({ reply }, params)
+      // make it async
+      setTimeout(() => {
+        fn({ reply }, params)
+      }, 0)
     }
   }
 }
