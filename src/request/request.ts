@@ -26,9 +26,26 @@ class IPCRequestError extends Error {
   }
 }
 
+export interface IpcRequestConfig {
+  replace?: boolean,
+  // timeout unit ms
+  timeout?: undefined | number
+}
+
+const _defaultConfig: IpcRequestConfig = {
+  replace: false,
+  timeout: undefined
+}
+
+let _config: IpcRequestConfig = { ... _defaultConfig }
+
 // 缓存标识与回调函数
 const _waitMap = new Map<string, Callback>()
 const _typeReplaceMap = new Map<string, string>()
+
+export function setConfig (config: IpcRequestConfig) {
+  _config = Object.assign({}, _defaultConfig, config)
+}
 
 export default function (ipcRenderer: IpcRenderer) {
   // 监听 electron 端发送来的消息
@@ -60,6 +77,9 @@ export default function (ipcRenderer: IpcRenderer) {
         data
       }
     }
+
+    // set config
+    options = Object.assign({}, _config, options)
 
     // @FIXME 生成机制有待优化
     // 生成唯一标识
