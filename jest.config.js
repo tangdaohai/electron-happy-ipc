@@ -6,5 +6,5 @@ module.exports = {
     'src/request/index.ts',
     'src/server/index.ts'
   ],
-  coverageReporters: ['text']
+  coverageReporters: ['text', 'json']
 }
