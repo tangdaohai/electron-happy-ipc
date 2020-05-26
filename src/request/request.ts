@@ -43,7 +43,7 @@ let _config: IpcRequestConfig = { ... _defaultConfig }
 const _waitMap = new Map<string, Callback>()
 const _typeReplaceMap = new Map<string, string>()
 
-export function setConfig (config: IpcRequestConfig) {
+export function setConfig (config: IpcRequestConfig = {}) {
   _config = Object.assign({}, _defaultConfig, config)
 }
 
