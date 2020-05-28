@@ -6,6 +6,7 @@
   "author": "tangdaohai@outlook.com",
   "license": "MIT",
   "scripts": {
+    "build": "tsc ./src/server/index.ts --outDir ./src/server && tsc ./src/request/index.ts --outDir ./src/request",
     "test": "jest --coverage"
   },
   "peerDependencies": {
@@ -17,6 +18,8 @@
     "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^25.2.2",
     "babel-jest": "^26.0.1",
-    "jest": "^26.0.1"
+    "electron": "*",
+    "jest": "^26.0.1",
+    "typescript": "^3.9.3"
   }
 }
