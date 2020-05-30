@@ -25,7 +25,7 @@
    > 1. 在 Main Process 中引用，类似 `Koa router` 的使用方式，作为 controller 方式管理
    > 2. 在 Renderer Process 中引用，类似于 `axios` 使用方式
 
-   * Main Procss
+   * Main Process
 
      ```typescript
      import server from 'electron-happy-ipc/server'
@@ -57,7 +57,7 @@
        const init = async () => {
          // request 取代 ipcRenderer.send 和 ipcRenderer.on
          const result = await request('test', { a: 1 })
-         // result => ['1', '2', '3'] from Main Procss
+         // result => ['1', '2', '3'] from Main Process
          setList(result)
        }
      }
@@ -67,7 +67,7 @@
 
 ### API
 
-##### replace
+##### cover
 
 *boolean 可选*
 
@@ -76,6 +76,8 @@
 > 比如发起一个分页请求，点击第 2 页后，紧接着又点击了第 3 页，假如 `第 2 页` 的请求执行时间大于 `第 3 页`请求执行时间，那第 3 页的响应会先被 resolve，接着第 2 页的响应又被 resolve 了。
 >
 > 结果就是当前要展示第 3 页，但数据却是第 2 页的。
+>
+> 注意：设置 cover 仍会向 Main Process 发送两次通信
 
 ```typescript
 const init = async () => {
@@ -107,7 +109,7 @@ init() // 紧接着再次调用，上一次的 init 会立刻 reject。
 
 ### 全局 API
 
-### setConfig
+##### setConfig
 
 设置全局配置。
 
