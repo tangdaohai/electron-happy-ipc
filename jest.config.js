@@ -4,8 +4,8 @@ module.exports = {
   coveragePathIgnorePatterns: [
     ...defaults.coveragePathIgnorePatterns,
     'test-driver',
-    'src/request/index.ts',
-    'src/server/index.ts'
+    'request/index.ts',
+    'server/index.ts'
   ],
   coverageReporters: ['text', 'json']
 }

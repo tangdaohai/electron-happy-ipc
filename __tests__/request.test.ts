@@ -1,7 +1,7 @@
 
 import { ipcMain, ipcRenderer } from '../test-driver'
-import serverService from '../src/server/server'
-import requestService, { setConfig, IPCRequestOptions } from '../src/request/request'
+import serverService from '../server/server'
+import requestService, { setConfig, IPCRequestOptions } from '../request/request'
 
 // @ts-ignore
 const server = serverService(ipcMain)

@@ -28,7 +28,7 @@
    * Main Procss
 
      ```typescript
-     import server from 'electron-happy-ipc/src/server'
+     import server from 'electron-happy-ipc/server'
      
      server.use('test', async (ctx, data) => {
        // data => { a: 1 }  from Renderer Process
@@ -45,7 +45,7 @@
 
      ```react
      import React, { useState, useEffect } from 'react'
-     import request from 'electron-happy-ipc/src/request'
+     import request from 'electron-happy-ipc/request'
      
      export default function IpcTest () {
        const [list, setList] = useState([])
@@ -112,7 +112,7 @@ init() // 紧接着再次调用，上一次的 init 会立刻 reject。
 设置全局配置。
 
 ```typescript
-import request, { setConfig } from 'electron-happy-ipc/src/request'
+import request, { setConfig } from 'electron-happy-ipc/request'
 
  // 所有的 request 都会生效
 setConfig({

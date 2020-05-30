@@ -14,7 +14,8 @@
     "noEmit": true
   },
   "include": [
-    "src",
+    "request",
+    "server",
     "test"
   ]
 }
