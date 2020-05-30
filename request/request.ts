@@ -8,14 +8,14 @@ interface ReceivedParams {
 export interface IPCRequestOptions {
   type: string,
   data?: any,
-  replace?: boolean,
+  cover?: boolean,
   // timeout unit ms
   timeout?: undefined | number
 }
 
 type Callback = (data: any, err?: IPCRequestError) => void
 
-type IPCRequestErrorCode = 'replace' | 'timeout'
+type IPCRequestErrorCode = 'cover' | 'timeout'
 interface IPCRequestError extends Error {
   code: IPCRequestErrorCode
 }
@@ -27,13 +27,13 @@ class IPCRequestError extends Error {
 }
 
 export interface IpcRequestConfig {
-  replace?: boolean,
+  cover?: boolean,
   // timeout unit ms
   timeout?: undefined | number
 }
 
 const _defaultConfig: IpcRequestConfig = {
-  replace: false,
+  cover: false,
   timeout: undefined
 }
 
@@ -41,7 +41,7 @@ let _config: IpcRequestConfig = { ... _defaultConfig }
 
 // 缓存标识与回调函数
 const _waitMap = new Map<string, Callback>()
-const _typeReplaceMap = new Map<string, string>()
+const _typeCoverMap = new Map<string, string>()
 
 export function setConfig (config: IpcRequestConfig = {}) {
   _config = Object.assign({}, _defaultConfig, config)
@@ -85,19 +85,19 @@ export default function (ipcRenderer: IpcRenderer) {
     // 生成唯一标识
     const currentSymbol = Date.now() + ''
 
-    if (options.replace) {
-      const lastSymbol = _typeReplaceMap.get(options.type)
+    if (options.cover) {
+      const lastSymbol = _typeCoverMap.get(options.type)
       // 如果存在上一次的 symbol
       if (lastSymbol) {
         // 检查是否已经发生过 ipc 请求了，如果存在， reject 它
         const fn = _waitMap.get(lastSymbol)
         if (typeof fn === 'function') {
-          const error = new IPCRequestError('replace', 'This request was replaced by a new request.此请求被后面的覆盖了。')
+          const error = new IPCRequestError('cover', 'This request was overwritten by later.此请求被后面的覆盖了。')
           fn(undefined, error)
         }
       }
       // 设置本次的
-      _typeReplaceMap.set(options.type, currentSymbol)
+      _typeCoverMap.set(options.type, currentSymbol)
     }
 
     let timer: any
@@ -119,8 +119,8 @@ export default function (ipcRenderer: IpcRenderer) {
         if (err) {
           reject(err)
         } else {
-          // 请求已返回 移除 replace symbol
-          _typeReplaceMap.delete(options.type)
+          // 请求已返回 移除 cover symbol
+          _typeCoverMap.delete(options.type)
           resolve(result)
         }
       })

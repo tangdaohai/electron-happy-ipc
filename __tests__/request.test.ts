@@ -22,10 +22,10 @@ describe('use ipc request', () => {
     expect(result).toBe(value.foo)
   })
 
-  test('replace',(done) => {
+  test('cover',(done) => {
     const options: IPCRequestOptions = {
       type: 'request test',
-      replace: true
+      cover: true
     }
     let i = 1
     server.use(options.type, (ctx, data) => {
@@ -35,7 +35,7 @@ describe('use ipc request', () => {
 
     // 此次请求结果应该是 2，如果此次请求没有被替换的话
     request(options).catch(err => {
-      expect(err.code).toMatch('replace')
+      expect(err.code).toMatch('cover')
     })
     
     // @FIXME 因为 request symbol 生成的机制，同步运行 可能会产生相同的 symbol
@@ -70,13 +70,13 @@ describe ('use ipc request with config', () => {
 
   beforeEach(() => {
     setConfig({
-      replace: true,
+      cover: true,
       timeout: 500
     })
   })
 
-  test('global config: replace is true', async (done) => {
-    const type = 'global config: replace'
+  test('global config: cover is true', async (done) => {
+    const type = 'global config: cover'
     server.use(type, (ctx, data) => {
       setTimeout(() => {
         ctx.reply(data)
@@ -84,7 +84,7 @@ describe ('use ipc request with config', () => {
     })
 
     request(type, 1).catch(err => {
-      expect(err.code).toMatch('replace')
+      expect(err.code).toMatch('cover')
     })
 
     setTimeout(async () => {
