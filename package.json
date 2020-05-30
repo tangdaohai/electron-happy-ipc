@@ -1,13 +1,22 @@
 {
   "name": "electron-happy-ipc",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "async request for ipc.",
-  "main": "index.js",
-  "author": "tangdaohai@outlook.com",
   "license": "MIT",
   "scripts": {
-    "build": "tsc ./src/server/index.ts --outDir ./src/server && tsc ./src/request/index.ts --outDir ./src/request",
+    "build": "tsc ./server/index.ts --outDir ./server && tsc ./request/index.ts --outDir ./request",
     "test": "jest --coverage"
+  },
+  "keywords": ["electron", "ipc", "electron ipc", "ipc async"],
+  "author": "tangdaohai@outlook.com",
+  "files": ["request", "server"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangdaohai/electron-happy-ipc.git"
+  },
+  "homepage": "https://github.com/tangdaohai/electron-happy-ipc/blob/master/README.md",
+  "bugs": {
+    "url": "https://github.com/tangdaohai/electron-happy-ipc/issues"
   },
   "peerDependencies": {
     "electron": "*"
