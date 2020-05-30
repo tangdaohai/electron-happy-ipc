@@ -35,13 +35,13 @@ var IPCRequestError = /** @class */ (function (_super) {
     return IPCRequestError;
 }(Error));
 var _defaultConfig = {
-    replace: false,
+    cover: false,
     timeout: undefined
 };
 var _config = __assign({}, _defaultConfig);
 // 缓存标识与回调函数
 var _waitMap = new Map();
-var _typeReplaceMap = new Map();
+var _typeCoverMap = new Map();
 function setConfig(config) {
     if (config === void 0) { config = {}; }
     _config = Object.assign({}, _defaultConfig, config);
@@ -74,19 +74,19 @@ function default_1(ipcRenderer) {
         // @FIXME 生成机制有待优化
         // 生成唯一标识
         var currentSymbol = Date.now() + '';
-        if (options.replace) {
-            var lastSymbol = _typeReplaceMap.get(options.type);
+        if (options.cover) {
+            var lastSymbol = _typeCoverMap.get(options.type);
             // 如果存在上一次的 symbol
             if (lastSymbol) {
                 // 检查是否已经发生过 ipc 请求了，如果存在， reject 它
                 var fn = _waitMap.get(lastSymbol);
                 if (typeof fn === 'function') {
-                    var error = new IPCRequestError('replace', 'This request was replaced by a new request.此请求被后面的覆盖了。');
+                    var error = new IPCRequestError('cover', 'This request was overwritten by later.此请求被后面的覆盖了。');
                     fn(undefined, error);
                 }
             }
             // 设置本次的
-            _typeReplaceMap.set(options.type, currentSymbol);
+            _typeCoverMap.set(options.type, currentSymbol);
         }
         var timer;
         if (options.timeout) {
@@ -107,8 +107,8 @@ function default_1(ipcRenderer) {
                     reject(err);
                 }
                 else {
-                    // 请求已返回 移除 replace symbol
-                    _typeReplaceMap["delete"](options.type);
+                    // 请求已返回 移除 cover symbol
+                    _typeCoverMap["delete"](options.type);
                     resolve(result);
                 }
             });
